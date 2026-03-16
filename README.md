@@ -18,3 +18,27 @@ Inspired by research on experimental C-RAN platforms, this monitoring stack addr
 > Gashteroodkhani et al., "Architecture and Benchmark of an Experimental CRAN Platform over CPRI," IEEE INFOCOM 2024
 
 ## Architecture
+
+┌─────────────────────────────────────────────────────────────┐
+│ C-RAN Testbed │
+├──────────┬──────────┬──────────┬───────────────────────────┤
+│ RU 1 │ RU 2 │ RU 3 │ Radio Units │
+├──────────┴──────────┴──────────┤ │
+│ Fronthaul (CPRI) │ Transport Layer │
+├────────────────┬───────────────┤ │
+│ DU 1 │ DU 2 │ Distributed Units │
+├────────────────┴───────────────┤ │
+│ CU │ Central Unit │
+└────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────┐
+│ Monitoring Stack │
+├─────────────────┬─────────────────┬─────────────────────────┤
+│ CRAN Exporter │ Prometheus │ Grafana │
+│ (Port 8000) │ (Port 9090) │ (Port 3000) │
+└─────────────────┴─────────────────┴─────────────────────────┘
+
+text
+
+
