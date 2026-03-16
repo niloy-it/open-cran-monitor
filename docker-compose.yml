@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  cran-exporter:
+    build:
+      context: ./exporter
+      dockerfile: Dockerfile
+    container_name: cran-exporter
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - cran-network
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+    restart: unless-stopped
+    networks:
+      - cran-network
+    depends_on:
+      - cran-exporter
+
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=cran2024
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - cran-network
+    depends_on:
+      - prometheus
+
+networks:
+  cran-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:
